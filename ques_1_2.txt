@@ -1,0 +1,23 @@
+1.
+ Agent chooses to move east because it thinks it is the shortest path to the destination. According to A* algorithm the agent always chooses the
+ path that has min cost to the target. The total cost for moving from state(i) to state(j) is given by function f(n) = g(n) + h(n).
+ Taking manhattan distance as heuristic we get the cost of moving to east as f(n)= 1+ 3 = 4 and north is 1+5 = 6.
+
+2.
+The way A* works is it either finds a path to the target or returns no path. If it finds a path then the agent follows the presumed path to the
+goal or gets blocked and the process repeats.
+In general, repeated A* looks like
+
+procedure Main()
+while (start != goal) {
+     ComputePath();
+     set start to the current state of the agent (if it moved);
+}
+n be the number of unblocked cells. In the worst case the agent travels all the unblocked cells to get to the target. So the path length is at most n.
+
+The maximum number of times the loop runs is also given by n. Let’s say in the first iteration the agent finds a path of length n and sets out to
+follow it. It may happen that the next step it takes may be blocked and needs to run A* from the current location. So in the next iteration the agent
+finds a path to the destination of length n-1 and the process goes on. So all the unblocked cells in a given area will be explored once.
+Since A* remembers the blocked cells it sees in its path the number of iterations can be at most n.
+Upper bound of running time is = n + n-1 + n-2 +.....+ 3 + 2 + 1    - (n iterations)
+                                = n*(n+1)/2 = O(n^2)
