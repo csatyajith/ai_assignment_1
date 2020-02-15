@@ -113,5 +113,5 @@ class MazeVisualizer:
                 if j == 0:
                     self.ax.plot([j, j], [(i + 1), i], color="k")
                 if cell.blocked:
-                    i = self.maze.n_cols - i
-                    self.ax.fill_between([j, (j + 1)], [(i - 1), (i - 1)], [i, i], color="k")
+                    i = self.maze.n_cols - 1 - i
+                    self.ax.fill_between([j, j + 1], i, i + 1, color="k")
