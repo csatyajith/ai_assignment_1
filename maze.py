@@ -10,14 +10,18 @@ class Cell:
         self.col = col
         self.blocked = False
         self.visited = False
+        self.parent = None
 
 
 class Maze:
+
     def __init__(self, n_rows, n_cols):
         self.n_rows = n_rows
         self.n_cols = n_cols
         self.maze = [[Cell(r, c) for c in range(n_cols)] for r in range(n_rows)]
         self._create_maze()
+        self.start = self.get_endPoint()
+        self.end = self.get_endPoint()
 
     def _create_maze(self):
         traversal_stack = []
@@ -78,6 +82,21 @@ class Maze:
                     return False
         return True
 
+    def get_endPoint(self):
+        while True:
+            x = np.random.randint(0, self.n_rows - 1)
+            y = np.random.randint(0, self.n_cols - 1)
+            if not self.maze[x][y].blocked:
+                return self.maze[x][y]
+
+    def get_cell(self, i, j):
+        return self.maze[i][j]
+
+    def reset_visited(self):
+        for r in range(self.n_rows):
+            for c in range(self.n_cols):
+                self.maze[r][c].visited = False
+
 
 class MazeVisualizer:
     def __init__(self, maze: Maze):
@@ -115,3 +134,13 @@ class MazeVisualizer:
                 if cell.blocked:
                     i = self.maze.n_cols - 1 - i
                     self.ax.fill_between([j, j + 1], i, i + 1, color="k")
+                elif cell == self.maze.start:
+                    i = self.maze.n_cols - 1 - i
+                    self.ax.fill_between([j, j + 1], i, i + 1, color="r")
+                elif cell == self.maze.end:
+                    i = self.maze.n_cols - 1 - i
+                    self.ax.fill_between([j, j + 1], i, i + 1, color="c")
+
+    def fill_cell(self, i, j):
+        i = self.maze.n_cols - 1 - i
+        self.ax.fill_between([j, j + 1], i, i + 1, color='yellow')
