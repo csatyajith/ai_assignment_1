@@ -1,9 +1,7 @@
-import heapq
-
-from maze import MazeVisualizer, Maze, Cell
+from maze import Cell
 
 
-class element:
+class Element:
     def __init__(self, g_n, h_n, cell: Cell, parent: Cell):
         self.g_val = g_n
         self.h_val = h_n
@@ -15,12 +13,16 @@ class element:
         return self.h_val
 
 
-class Priority_Queue:
+class PriorityQueue:
     def __init__(self):
         self.heap = []
 
+    def get_best_node_from_open_list(self):
+        # An alias for pop for better readability
+        return self.pop()
+
     def push(self, g_n, h_n, cell: Cell, parent: Cell):
-        self.heap.append(element(g_n, h_n, cell, parent))
+        self.heap.append(Element(g_n, h_n, cell, parent))
 
     def pop(self):
         min_dist = 0

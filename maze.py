@@ -15,17 +15,19 @@ class Cell:
 
 class Maze:
 
-    def __init__(self, n_rows, n_cols):
+    def __init__(self, n_rows, n_cols, create_blockers=True, p_block=0.3):
         self.n_rows = n_rows
         self.n_cols = n_cols
+        self.p_block = p_block
         self.maze = [[Cell(r, c) for c in range(n_cols)] for r in range(n_rows)]
-        self._create_maze()
-        self.start = self.get_endPoint()
-        self.end = self.get_endPoint()
+        if create_blockers:
+            self._create_blockers()
+        self.start = self.get_random_cell()
+        self.end = self.get_random_cell()
 
-    def _create_maze(self):
+    def _create_blockers(self):
         traversal_stack = []
-        while not self.all_cells_visted():
+        while not self.all_cells_visited():
             if len(traversal_stack) == 0:
                 traversal_stack.append(self.get_random_unvisited_cell())
                 self.maze[traversal_stack[-1].row][traversal_stack[-1].col].visited = True
@@ -37,10 +39,11 @@ class Maze:
 
             next_step = random.choice(valid_neighbors)
             self.maze[next_step.row][next_step.col].visited = True
-            if np.random.random() <= 0.3:
+            if np.random.random() <= self.p_block:
                 self.maze[next_step.row][next_step.col].blocked = True
             else:
                 traversal_stack.append(next_step)
+        self.reset_visited()
 
     def get_neighbors(self, cell: Cell):
         neighbors = list()
@@ -75,14 +78,14 @@ class Maze:
                     unvisited.append(self.maze[i][j])
         return random.choice(unvisited)
 
-    def all_cells_visted(self):
+    def all_cells_visited(self):
         for r in self.maze:
             for c in r:
                 if not c.visited:
                     return False
         return True
 
-    def get_endPoint(self):
+    def get_random_cell(self):
         while True:
             x = np.random.randint(0, self.n_rows - 1)
             y = np.random.randint(0, self.n_cols - 1)
@@ -98,6 +101,14 @@ class Maze:
                 self.maze[r][c].visited = False
 
 
+class Agent:
+    def __init__(self, n_rows, n_cols, start_loc, target_loc):
+        self.agent_maze = Maze(n_rows, n_cols, create_blockers=False)
+        self.agent_maze.start = start_loc
+        self.current_loc = start_loc
+        self.agent_maze.end = target_loc
+
+
 class MazeVisualizer:
     def __init__(self, maze: Maze):
         self.maze = maze
@@ -105,7 +116,8 @@ class MazeVisualizer:
         self.configure_plot()
         self.fill_maze()
 
-    def show_maze(self):
+    @staticmethod
+    def show_maze():
         plt.show()
 
     def configure_plot(self):
