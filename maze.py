@@ -16,6 +16,7 @@ class Cell:
     def get_co_ordinates(self):
         return self.row, self.col
 
+
 class Maze:
 
     def __init__(self, n_rows, n_cols, create_blockers=True, p_block=0.3):
@@ -196,5 +197,5 @@ class MazeVisualizer:
 
     def plot(self, i, j, label):
         i = self.maze.n_cols - 1 - i
-        self.ax.plot(j + 0.5, i + 0.5, "ro")
+        self.ax.plot(j + 0.5, i + 0.5, "go")
         self.ax.annotate(label, (j + 0.5, i + 0.5))

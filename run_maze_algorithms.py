@@ -101,7 +101,7 @@ class AStarWithAgent:
         for i, cell in enumerate(path):
             if cell.get_co_ordinates() not in [self.agent.agent_maze.start.get_co_ordinates(),
                                                self.agent.agent_maze.end.get_co_ordinates()]:
-                mazevis.plot(cell.row, cell.col, label=str(i))
+                mazevis.fill_cell(cell.row, cell.col)
 
     def run_a_star_with_agent(self):
         maze_vis = MazeVisualizer(self.maze)
@@ -191,7 +191,7 @@ class ReverseAStar:
 if __name__ == '__main__':
     # my_a_star = AStar(10, 10)
     # my_a_star.run_a_star()
-    # my_reverse = ReverseAStar(10, 10)
-    # my_reverse.reverse_a_star()
-    my_agent_a_star = AStarWithAgent(10, 10)
-    my_agent_a_star.run_a_star_with_agent()
+    my_reverse = ReverseAStar(10, 10)
+    my_reverse.reverse_a_star()
+    # my_agent_a_star = AStarWithAgent(10, 10)
+    # my_agent_a_star.run_a_star_with_agent()
