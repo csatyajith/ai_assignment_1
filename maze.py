@@ -11,6 +11,8 @@ class Cell:
         self.blocked = False
         self.visited = False
         self.parent = None
+        self.child = []
+        #self.block_known = False
 
 
 class Maze:
@@ -20,8 +22,8 @@ class Maze:
         self.n_cols = n_cols
         self.maze = [[Cell(r, c) for c in range(n_cols)] for r in range(n_rows)]
         self._create_maze()
-        self.start = self.get_endPoint()
-        self.end = self.get_endPoint()
+        # self.start = self.get_endPoint()
+        # self.end = self.get_endPoint()
 
     def _create_maze(self):
         traversal_stack = []

@@ -1,5 +1,3 @@
-import heapq
-
 from maze import MazeVisualizer, Maze, Cell
 
 
@@ -40,3 +38,6 @@ class Priority_Queue:
     def print(self):
         for i in range(len(self.heap)):
             print(self.heap[i].h_val)
+
+    def remove_all(self):
+        self.heap.clear()
