@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,6 +13,8 @@ class Cell:
         self.visited = False
         self.parent = None
 
+    def get_co_ordinates(self):
+        return self.row, self.col
 
 class Maze:
 
@@ -31,7 +34,7 @@ class Maze:
             if len(traversal_stack) == 0:
                 traversal_stack.append(self.get_random_unvisited_cell())
                 self.maze[traversal_stack[-1].row][traversal_stack[-1].col].visited = True
-            valid_neighbors = self.get_neighbors(traversal_stack[-1])
+            valid_neighbors = self.get_unblocked_unvisited_neighbors(traversal_stack[-1])
 
             if len(valid_neighbors) == 0:
                 traversal_stack.pop()
@@ -45,8 +48,7 @@ class Maze:
                 traversal_stack.append(next_step)
         self.reset_visited()
 
-    def get_neighbors(self, cell: Cell):
-        neighbors = list()
+    def get_neighbor_range(self, cell):
         accepted_rows = [-1, 1]
         accepted_cols = [-1, 1]
         if cell.row == self.n_rows - 1:
@@ -57,7 +59,11 @@ class Maze:
             accepted_cols = [-1]
         elif cell.col == 0:
             accepted_cols = [1]
+        return accepted_rows, accepted_cols
 
+    def get_unblocked_unvisited_neighbors(self, cell: Cell):
+        accepted_rows, accepted_cols = self.get_neighbor_range(cell)
+        neighbors = list()
         for i in accepted_rows:
             n1 = self.maze[cell.row + i][cell.col]
             if not n1.blocked and not n1.visited:
@@ -68,6 +74,20 @@ class Maze:
             if not n2.blocked and not n2.visited:
                 neighbors.append(n2)
 
+        return neighbors
+
+    def get_blocked_neighbors(self, cell: Cell):
+        neighbors = list()
+        accepted_rows, accepted_cols = self.get_neighbor_range(cell)
+        for i in accepted_rows:
+            n1 = self.maze[cell.row + i][cell.col]
+            if n1.blocked:
+                neighbors.append(n1)
+
+        for j in accepted_cols:
+            n2 = self.maze[cell.row][cell.col + j]
+            if n2.blocked:
+                neighbors.append(n2)
         return neighbors
 
     def get_random_unvisited_cell(self):
@@ -102,11 +122,28 @@ class Maze:
 
 
 class Agent:
-    def __init__(self, n_rows, n_cols, start_loc, target_loc):
+    def __init__(self, n_rows, n_cols, start: Cell, target: Cell, original_maze: Maze):
         self.agent_maze = Maze(n_rows, n_cols, create_blockers=False)
-        self.agent_maze.start = start_loc
-        self.current_loc = start_loc
-        self.agent_maze.end = target_loc
+        self.agent_maze.start = start
+        self.current_loc = self.agent_maze.maze[start.row][start.col]
+        self.original_maze = original_maze
+        self.mark_blocked_neighbors()
+        self.agent_maze.end = target
+
+    def mark_blocked_neighbors(self):
+        for n in self.original_maze.get_blocked_neighbors(self.current_loc):
+            self.agent_maze.maze[n.row][n.col].blocked = True
+
+    def traverse_path(self, cells: List[Cell]):
+        traversed_path = []
+        for cell in cells:
+            if self.agent_maze.maze[cell.row][cell.col].blocked:
+                return traversed_path
+            else:
+                self.current_loc = self.agent_maze.maze[cell.row][cell.col]
+                traversed_path.append(cell)
+            self.mark_blocked_neighbors()
+        return traversed_path
 
 
 class MazeVisualizer:
@@ -156,3 +193,8 @@ class MazeVisualizer:
     def fill_cell(self, i, j):
         i = self.maze.n_cols - 1 - i
         self.ax.fill_between([j, j + 1], i, i + 1, color='yellow')
+
+    def plot(self, i, j, label):
+        i = self.maze.n_cols - 1 - i
+        self.ax.plot(j + 0.5, i + 0.5, "ro")
+        self.ax.annotate(label, (j + 0.5, i + 0.5))
