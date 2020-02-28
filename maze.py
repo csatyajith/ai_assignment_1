@@ -12,6 +12,7 @@ class Cell:
         self.blocked = False
         self.visited = False
         self.parent = None
+        self.children = []
 
     def get_co_ordinates(self):
         return self.row, self.col
@@ -127,6 +128,7 @@ class Agent:
         self.agent_maze = Maze(n_rows, n_cols, create_blockers=False)
         self.agent_maze.start = start
         self.current_loc = self.agent_maze.maze[start.row][start.col]
+        print("Agent's starting position is - row: {}, col: {}".format(start.row, start.col))
         self.original_maze = original_maze
         self.mark_blocked_neighbors()
         self.agent_maze.end = target
@@ -139,9 +141,12 @@ class Agent:
         traversed_path = []
         for cell in cells:
             if self.agent_maze.maze[cell.row][cell.col].blocked:
+                print(
+                    "Agent encountered blocked cell in path. Blocked cell row: {}, col: {}".format(cell.row, cell.col))
                 return traversed_path
             else:
                 self.current_loc = self.agent_maze.maze[cell.row][cell.col]
+                print("Agent moved to row: {}, column: {}".format(cell.row, cell.col))
                 traversed_path.append(cell)
             self.mark_blocked_neighbors()
         return traversed_path

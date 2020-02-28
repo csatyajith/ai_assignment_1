@@ -1,3 +1,5 @@
+from typing import Optional
+
 from maze import Cell
 
 
@@ -21,7 +23,7 @@ class PriorityQueue:
         # An alias for pop for better readability
         return self.pop()
 
-    def push(self, g_n, h_n, cell: Cell, parent: Cell):
+    def push(self, g_n, h_n, cell: Cell, parent: Optional[Cell]):
         self.heap.append(Element(g_n, h_n, cell, parent))
 
     def pop(self):
