@@ -332,5 +332,5 @@ if __name__ == '__main__':
     # my_reverse.reverse_a_star()
     # my_agent_a_star = AStarWithAgent(10, 10)
     # my_agent_a_star.run_a_star_with_agent()
-    adaptive = AdaptiveAStarWithAgent(20, 20)
-    adaptive.demo_adaptive_a_star()
+    adaptive = AStarWithAgent(50, 50)
+    adaptive.run_a_star_with_agent()
