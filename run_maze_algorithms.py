@@ -21,7 +21,7 @@ class Utils:
         for cell in path[:-1]:
             mazevis.fill_cell(cell.row, cell.col)
             count += 1
-        print("Total {} moves are: {}".format(algo_name, count))
+        print("Total {} moves are: {} \n".format(algo_name, count))
 
     @staticmethod
     def get_traversal_path(target: Cell, reverse_a_star=False):
@@ -230,7 +230,7 @@ class AdaptiveAStarWithAgent:
                 print("New heuristic for ({}, {}) is {}".format(i.row, i.col, count))
             mazevis.fill_cell(path_cell.row, path_cell.col)
             count += 1
-        print("Adaptive A star moves", count)
+        print("Adaptive A star moves", count, "\n")
 
     def compute_path(self, queue):
         moves = 1
@@ -263,24 +263,23 @@ class AdaptiveAStarWithAgent:
                           None)
             path = self.compute_path(my_queue)
             if path is None:
-                print("Path does not exists")
+                print("Path does not exists\n")
                 return
             traversed_path.extend(self.agent.traverse_path(path))
             if self.agent.current_loc.get_co_ordinates() == self.maze.end.get_co_ordinates():
                 re_compute = False
 
-        print("Adaptive * path exists")
+        print("Adaptive * path exists\n")
         self.update_heuristics(traversed_path, maze_vis)
         Utils.print_path(traversed_path, maze_vis, "Adaptive A*")
+        # maze_vis.show_maze()
 
-    def demo_adaptive_a_star(self, n_times):
+    def demo_adaptive_a_star(self, n_times=10):
+        self.maze.start = self.maze.get_random_cell()
         for _ in range(n_times):
-            self.maze.start = self.maze.get_random_cell()
             if self.maze.start == self.maze.end:
                 continue
-            self.maze.reset_visited()
-            self.run_adaptive_a_star()
-            self.maze.reset_visited()
+            self.agent = Agent(self.maze.n_rows, self.maze.n_cols, self.maze.start, self.maze.end, self.maze)
             self.run_adaptive_a_star()
 
 
@@ -333,5 +332,5 @@ if __name__ == '__main__':
     # my_reverse.reverse_a_star()
     # my_agent_a_star = AStarWithAgent(10, 10)
     # my_agent_a_star.run_a_star_with_agent()
-    adaptive = AStarWithAgent(10, 10)
-    adaptive.run_a_star_with_agent()
+    adaptive = AdaptiveAStarWithAgent(20, 20)
+    adaptive.demo_adaptive_a_star()
