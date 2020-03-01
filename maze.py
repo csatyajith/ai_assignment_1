@@ -92,6 +92,20 @@ class Maze:
                 neighbors.append(n2)
         return neighbors
 
+    def get_unblocked_neighbors(self, cell: Cell):
+        neighbors = list()
+        accepted_rows, accepted_cols = self.get_neighbor_range(cell)
+        for i in accepted_rows:
+            n1 = self.maze[cell.row + i][cell.col]
+            if not n1.blocked:
+                neighbors.append(n1)
+
+        for j in accepted_cols:
+            n2 = self.maze[cell.row][cell.col + j]
+            if not n2.blocked:
+                neighbors.append(n2)
+        return neighbors
+
     def get_random_unvisited_cell(self):
         unvisited = list()
         for i in range(self.n_rows):

@@ -18,13 +18,19 @@ class Element:
 class PriorityQueue:
     def __init__(self):
         self.heap = []
+        self.heap_co_ords = set()
+        self.closed = set()
 
     def get_best_node_from_open_list(self):
         # An alias for pop for better readability
         return self.pop()
 
-    def push(self, g_n, h_n, cell: Cell, parent: Cell):
-        self.heap.append(Element(g_n, h_n, cell, parent))
+    def push(self, g_n, h_n, cell: Cell, parent: Optional[Cell]):
+        co_ordinates = cell.get_co_ordinates()
+        if (co_ordinates not in self.closed) and (co_ordinates not in self.heap_co_ords):
+            self.heap.append(Element(g_n, h_n, cell, parent))
+            self.heap_co_ords.add(cell.get_co_ordinates())
+            self.heapsort()
 
     def swap(self, i, j):
         obj1 = self.heap[i]
@@ -63,19 +69,20 @@ class PriorityQueue:
         self.print()
         if min_index is not index:
             self.swap(min_index, index)
-            #print('call recur', min_index)
+            # print('call recur', min_index)
             self.heapify(min_index)
 
     def heapsort(self):
-        for i in range(int(self.__len__() / 2 - 1), -1, -1):
+        for i in range(int(len(self.heap) / 2 - 1), -1, -1):
             self.heapify(i)
-        #print("Heap length: ", self.__len__())
+        # print("Heap length: ", len(self.heap))
 
     def pop(self):
-        #print('call heapsort')
-        self.heapsort()
+        # print('call heapsort')
         min_ele = self.heap[0]
         # print('final min ele', self.heap[0].f_val)
+        self.closed.add(self.heap[0].cell.get_co_ordinates())
+        self.heap_co_ords.remove(min_ele.cell.get_co_ordinates())
         del self.heap[0]
         return min_ele
 
@@ -84,5 +91,5 @@ class PriorityQueue:
 
     def print(self):
         pass
-        #for i in range(len(self.heap)):
-            #print(self.heap[i].f_val)
+        # for i in range(len(self.heap)):
+        # print(self.heap[i].f_val)
