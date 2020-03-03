@@ -1,8 +1,9 @@
+import json
 import pickle
 import random
 from typing import List, Optional
 
-from maze import Maze, Cell, Agent
+from maze import Maze, Cell, Agent, MazeVisualizer
 from priority_queue import PriorityQueue
 
 
@@ -78,7 +79,7 @@ class AStarWithAgent:
         self.agent = Agent(self.maze.n_rows, self.maze.n_cols, self.maze.start, self.maze.end, self.maze)
 
     def run_a_star_with_agent(self):
-        # maze_vis = MazeVisualizer(self.maze)
+        maze_vis = MazeVisualizer(self.maze)
         re_compute = True
         traversed_path = list()
         manhattan_heuristic = Utils.compute_heuristic(self.maze, self.maze.end)
@@ -95,10 +96,10 @@ class AStarWithAgent:
             traversed_path.extend(self.agent.traverse_path(path))
             if self.agent.current_loc.get_co_ordinates() == self.maze.end.get_co_ordinates():
                 re_compute = False
-        # Utils.print_path(traversed_path, maze_vis, "A*", self.maze.start, self.maze.end)
+        Utils.print_path(traversed_path, maze_vis, "A*", self.maze.start, self.maze.end)
         print("\nTotal popped nodes are: ", self.pop_counter)
+        maze_vis.show_maze()
         return self.pop_counter, len(traversed_path)
-        # maze_vis.show_maze()
 
 
 class AdaptiveAStarWithAgent:
@@ -142,7 +143,7 @@ class AdaptiveAStarWithAgent:
         return None
 
     def run_adaptive_a_star(self):
-        # maze_vis = MazeVisualizer(self.maze)
+        maze_vis = MazeVisualizer(self.maze)
         traversed_path = [self.agent.current_loc]
         re_compute = True
         print("Agent's destination is - row: {}, col: {}".format(self.maze.end.row, self.maze.end.col))
@@ -163,9 +164,9 @@ class AdaptiveAStarWithAgent:
 
         print("Adaptive * path exists\n")
         self.update_heuristics(traversed_path)
-        # Utils.print_path(traversed_path, maze_vis, "Adaptive A*", self.maze.start, self.maze.end)
+        Utils.print_path(traversed_path, maze_vis, "Adaptive A*", self.maze.start, self.maze.end)
+        maze_vis.show_maze()
         return self.pop_counter, len(traversed_path)
-        # maze_vis.show_maze()
 
     def reset_agent(self):
         self.agent = Agent(self.maze.n_rows, self.maze.n_cols, self.maze.start, self.maze.end, self.maze)
@@ -207,7 +208,7 @@ class ReverseAStar:
         return None
 
     def run_reverse_a_star(self):
-        # maze_vis = MazeVisualizer(self.maze)
+        maze_vis = MazeVisualizer(self.maze)
         re_compute = True
         print("Agent's destination is - row: {}, col: {}".format(self.maze.end.row, self.maze.end.col))
         traversed_path = list()
@@ -225,22 +226,29 @@ class ReverseAStar:
             traversed_path.extend(self.agent.traverse_path(path))
             if self.agent.current_loc.get_co_ordinates() == self.maze.end.get_co_ordinates():
                 re_compute = False
-        # Utils.print_path(traversed_path, maze_vis, "Reverse A*", self.maze.start, self.maze.end)
+        Utils.print_path(traversed_path, maze_vis, "Reverse A*", self.maze.start, self.maze.end)
         print("\nTotal popped nodes are: ", self.pop_counter)
-        # maze_vis.show_maze()
+        maze_vis.show_maze()
         return self.pop_counter, len(traversed_path)
 
 
 if __name__ == '__main__':
-    # my_a_star = AStar(10, 10)
-    # my_a_star.run_a_star()
-    # my_reverse = ReverseAStar(10, 10)
-    # my_reverse.reverse_a_star()
-    # my_agent_a_star = AStarWithAgent(10, 10)
-    # my_agent_a_star.run_a_star_with_agent()
-    import json
-
     def_mazes = Utils.load_mazes()
+
+    # A star algorithm
+    my_a_star = AStarWithAgent(def_mazes[0])
+    my_a_star.run_a_star_with_agent()
+
+    # Reverse A star algorithm
+    my_reverse = ReverseAStar(def_mazes[0])
+    my_reverse.run_reverse_a_star()
+
+    # Adaptive A star algorithm
+    my_agent_a_star = AdaptiveAStarWithAgent(def_mazes[0])
+    my_agent_a_star.run_adaptive_a_star()
+
+
+def aws_function():
     differences = list()
     n_times = 500
     adaptive = AdaptiveAStarWithAgent(maze=def_mazes[0])
